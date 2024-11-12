@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -18,6 +17,8 @@ import {
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import Link from "next/link";
+import { createAccount } from "@/lib/actions/user.actions";
+import OTPModal from "@/components/OTPModal";
 
 type FormDataType = "sign-in" | "sign-up";
 
@@ -34,6 +35,7 @@ const authFormSchema = (formType: FormDataType) => {
 export default function AuthForm({ type }: { type: FormDataType }) {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>("");
+  const [accountId, setAccountId] = useState(null);
 
   const formSchema = authFormSchema(type);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -44,9 +46,24 @@ export default function AuthForm({ type }: { type: FormDataType }) {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-  }
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setIsLoading(true);
+    setErrorMessage("");
+
+    try {
+      const user = await createAccount({
+        fullName: values.fullName || "",
+        email: values.email,
+      });
+
+      setAccountId(user.accountId);
+    } catch (e) {
+      console.error(e);
+      setErrorMessage("Failed to create account");
+    } finally {
+      setIsLoading(false);
+    }
+  };
   return (
     <>
       <Form {...form}>
@@ -134,6 +151,11 @@ export default function AuthForm({ type }: { type: FormDataType }) {
           </div>
         </form>
       </Form>
+      {/* OTP Verification */}
+
+      {accountId && (
+        <OTPModal email={form.getValues("email")} accountId={accountId} />
+      )}
     </>
   );
 }
