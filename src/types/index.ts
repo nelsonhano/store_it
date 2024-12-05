@@ -7,7 +7,7 @@ export declare type FileType =
   | "audio"
   | "other";
 
-declare interface ActionType {
+export declare interface ActionType {
   label: string;
   icon: string;
   value: string;
@@ -30,7 +30,7 @@ declare interface GetFilesProps {
   sort?: string;
   limit?: number;
 }
-declare interface RenameFileProps {
+export declare interface RenameFileProps {
   fileId: string;
   name: string;
   extension: string;
