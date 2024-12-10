@@ -13,6 +13,12 @@ export declare interface ActionType {
   value: string;
 }
 
+export interface SegmentParams {
+  // Add the relevant properties for SegmentParams
+  id: string; // Example property
+  name?: string;
+}
+
 export declare interface SearchParamProps {
   params?: Promise<SegmentParams>;
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;

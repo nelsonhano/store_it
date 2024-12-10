@@ -35,8 +35,7 @@
   },
   "overrides": {
     "react": "$react",
-    "react-dom": "$react-dom",
-    "eslint-config-standard/eslint-plugin-promise": "^7.1.0"
+    "react-dom": "$react-dom"
   },
   "devDependencies": {
     "@types/node": "^20",

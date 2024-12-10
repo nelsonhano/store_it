@@ -11,19 +11,17 @@ export default function Header({
   userId: string;
   accountId: string;
 }) {
+  const handleSignOut = async () => {
+    "use server"; // Indicates this is a server action
+    await signOutUser();
+  };
   return (
     <>
       <header className="header">
         <Search />
         <div className="header-wrapper">
-          <FileUploader className="" ownerId={userId} accountId={accountId} />
-          <form
-            action={async () => {
-              "use server";
-
-              await signOutUser();
-            }}
-          >
+          <FileUploader className=" " ownerId={userId} accountId={accountId} />
+          <form action={handleSignOut}>
             <Button className="sign-out-button" type="submit">
               <Image
                 src="/assets/icons/logout.svg"
