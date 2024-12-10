@@ -24,7 +24,7 @@ export interface UploadFileProps {
   accountId: string;
   path: string;
 }
-declare interface GetFilesProps {
+export declare interface GetFilesProps {
   types: FileType[];
   searchText?: string;
   sort?: string;

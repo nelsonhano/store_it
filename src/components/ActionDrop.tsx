@@ -95,7 +95,7 @@ export default function ActionDrop({ file }: { file: Models.Document }) {
   const renderDialog = () => {
     if (!action) return null;
 
-    const { label, value } = action;
+    const { value } = action;
     return (
       <DialogContent className="shad-dialog button">
         <DialogHeader className="flex flex-col gap-3">
