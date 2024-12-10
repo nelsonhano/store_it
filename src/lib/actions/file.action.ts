@@ -4,6 +4,7 @@ import {
   UploadFileProps,
   RenameFileProps,
   UpdateFileUsersProps,
+  DeleteFileProps,
 } from "@/types";
 import { createAdminClient } from "@/lib/appwrite";
 import { InputFile } from "node-appwrite/file";
@@ -148,6 +149,32 @@ export const updateFileUsers = async ({
     revalidatePath(path);
 
     return parseStringify(updatedNameFile);
+  } catch (e) {
+    handleError(e, "Field to rename file name");
+  }
+};
+
+export const deleteFile = async ({
+  fileId,
+  bucketFileId,
+  path,
+}: DeleteFileProps) => {
+  const { databases, storage } = await createAdminClient();
+
+  try {
+    const deletedFile = await databases.deleteDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.filesCollectionId,
+      fileId,
+    );
+
+    if (deletedFile) {
+      await storage.deleteFile(appwriteConfig.bucketId, bucketFileId);
+    }
+
+    revalidatePath(path);
+
+    return parseStringify({ status: "success" });
   } catch (e) {
     handleError(e, "Field to rename file name");
   }

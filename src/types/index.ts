@@ -41,7 +41,7 @@ export declare interface UpdateFileUsersProps {
   emails: string[];
   path: string;
 }
-declare interface DeleteFileProps {
+export declare interface DeleteFileProps {
   fileId: string;
   bucketFileId: string;
   path: string;

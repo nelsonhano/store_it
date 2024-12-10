@@ -4,7 +4,7 @@ import { cn, getFileIcon } from "@/lib/utils";
 interface Props {
   type: string;
   extension: string;
-  url?: string;
+  url: "";
   imageClassName: string;
   className?: string;
 }
@@ -16,7 +16,8 @@ export default function Thumbnail({
   imageClassName,
   className,
 }: Props) {
-  const isImage = (type === "image" && extension === "svg") || "jpg";
+  const isImage = type === "image" && extension !== "svg";
+
   return (
     <figure className={cn("thumbnail", className)}>
       <Image
@@ -25,7 +26,7 @@ export default function Thumbnail({
         width={100}
         height={100}
         className={cn(
-          "size-8 object-cover",
+          "size-8 border-4 object-cover",
           imageClassName,
           isImage && "thumbnail-image",
         )}
