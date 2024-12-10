@@ -3,7 +3,6 @@ import Image from "next/image";
 import Search from "@/components/Search";
 import FileUploader from "@/components/FileUploader";
 import { signOutUser } from "@/lib/actions/user.actions";
-import { className } from "postcss-selector-parser";
 
 export default function Header({
   userId,
@@ -17,7 +16,7 @@ export default function Header({
       <header className="header">
         <Search />
         <div className="header-wrapper">
-          <FileUploader ownerId={userId} accountId={accountId} />
+          <FileUploader className="" ownerId={userId} accountId={accountId} />
           <form
             action={async () => {
               "use server";

@@ -100,7 +100,7 @@ export default function MobileNavigation({
 
           <Separator className="my-5 bg-light-200/20" />
 
-          <FileUploader ownerId={ownerId} accountId={accountId} />
+          <FileUploader className="" ownerId={ownerId} accountId={accountId} />
           <div className="flex flex-col justify-between gap-5 pb-5">
             <Button
               type="submit"

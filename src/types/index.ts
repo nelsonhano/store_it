@@ -46,36 +46,3 @@ export declare interface DeleteFileProps {
   bucketFileId: string;
   path: string;
 }
-
-declare interface FileUploaderProps {
-  ownerId: string;
-  accountId: string;
-  className?: string;
-}
-
-declare interface MobileNavigationProps {
-  ownerId: string;
-  accountId: string;
-  fullName: string;
-  avatar: string;
-  email: string;
-}
-declare interface SidebarProps {
-  fullName: string;
-  avatar: string;
-  email: string;
-}
-
-declare interface ThumbnailProps {
-  type: string;
-  extension: string;
-  url: string;
-  className?: string;
-  imageClassName?: string;
-}
-
-declare interface ShareInputProps {
-  file: Models.Document;
-  onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onRemove: (email: string) => void;
-}
