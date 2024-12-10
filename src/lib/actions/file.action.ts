@@ -1,6 +1,10 @@
 "use server";
 
-import { UploadFileProps, RenameFileProps } from "@/types";
+import {
+  UploadFileProps,
+  RenameFileProps,
+  UpdateFileUsersProps,
+} from "@/types";
 import { createAdminClient } from "@/lib/appwrite";
 import { InputFile } from "node-appwrite/file";
 import { appwriteConfig } from "@/lib/appwrite/config";
@@ -113,6 +117,31 @@ export const renameFile = async ({
       fileId,
       {
         name: newNameFile,
+      },
+    );
+
+    revalidatePath(path);
+
+    return parseStringify(updatedNameFile);
+  } catch (e) {
+    handleError(e, "Field to rename file name");
+  }
+};
+
+export const updateFileUsers = async ({
+  fileId,
+  emails,
+  path,
+}: UpdateFileUsersProps) => {
+  const { databases } = await createAdminClient();
+
+  try {
+    const updatedNameFile = await databases.updateDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.filesCollectionId,
+      fileId,
+      {
+        users: emails,
       },
     );
 

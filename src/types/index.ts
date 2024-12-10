@@ -36,7 +36,7 @@ export declare interface RenameFileProps {
   extension: string;
   path: string;
 }
-declare interface UpdateFileUsersProps {
+export declare interface UpdateFileUsersProps {
   fileId: string;
   emails: string[];
   path: string;

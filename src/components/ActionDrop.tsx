@@ -26,9 +26,9 @@ import { actionsDropdownItems } from "@/constants";
 import { ActionType } from "@/types";
 import { constructDownloadUrl } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { renameFile } from "@/lib/actions/file.action";
+import { renameFile, updateFileUsers } from "@/lib/actions/file.action";
 import { usePathname } from "next/navigation";
-import { FileDetails } from "@/components/ActionModalContent";
+import { FileDetails, ShareInput } from "@/components/ActionModalContent";
 
 export default function ActionDrop({ file }: { file: Models.Document }) {
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
@@ -37,6 +37,7 @@ export default function ActionDrop({ file }: { file: Models.Document }) {
   const [name, setName] = useState(file.name);
   const [isLoading, setIsLoading] = useState(false);
   const path = usePathname();
+  const [emails, setEmails] = useState<string[]>([]);
 
   const closeAllModal = () => {
     setIsModalOpen(false);
@@ -54,7 +55,12 @@ export default function ActionDrop({ file }: { file: Models.Document }) {
     const actions = {
       rename: () =>
         renameFile({ fileId: file.$id, name, extension: file.extension, path }),
-      share: () => console.log("share"),
+      share: () =>
+        updateFileUsers({
+          fileId: file.$id,
+          emails,
+          path,
+        }),
       delete: () => console.log("delete"),
     };
     success = await actions[action.value as keyof typeof actions]();
@@ -62,6 +68,19 @@ export default function ActionDrop({ file }: { file: Models.Document }) {
     if (success) closeAllModal();
 
     setIsLoading(false);
+  };
+
+  const handleRemoveEmail = async (email: string) => {
+    const updateEmail = emails.filter((e) => e !== email);
+
+    const sucess = await updateFileUsers({
+      fileId: file.$id,
+      emails: updateEmail,
+      path,
+    });
+
+    if (sucess) setEmails(updateEmail);
+    closeAllModal();
   };
 
   const renderDialog = () => {
@@ -85,6 +104,14 @@ export default function ActionDrop({ file }: { file: Models.Document }) {
           )}
 
           {value === "details" && <FileDetails file={file} />}
+
+          {value === "share" && (
+            <ShareInput
+              file={file}
+              onInputChange={setEmails}
+              onRemove={handleRemoveEmail}
+            />
+          )}
         </DialogHeader>
         {["rename", "delete", "share"].includes(value) && (
           <DialogFooter className="flex flex-col gap-3 md:flex-row">
