@@ -25,6 +25,7 @@ export default function Thumbnail({
         alt="thumbnail"
         width={100}
         height={100}
+        unoptimized
         className={cn(
           "size-8 border-4 object-cover",
           imageClassName,

@@ -46,15 +46,13 @@ export default function ActionDrop({ file }: { file: Models.Document }) {
   const closeAllModal = () => {
     setIsModalOpen(false);
     setName(file.name);
-    setIsModalOpen(false);
     setIsDropDownOpen(false);
-    // setEmail([]);
+    setEmails([]);
   };
 
   const handleAction = async () => {
     if (!action) return;
     setIsLoading(true);
-    let success = false;
 
     const actions = {
       rename: () =>
@@ -62,33 +60,43 @@ export default function ActionDrop({ file }: { file: Models.Document }) {
       share: () =>
         updateFileUsers({
           fileId: file.$id,
-          emails,
+          // Add the new emails to the people who already have access.
+          emails: [...(file.users ?? []), ...emails],
           path,
         }),
       delete: () =>
         deleteFile({
           fileId: file.$id,
-          bucketFileId: file.bucketFileId,
           path,
         }),
     };
-    success = await actions[action.value as keyof typeof actions]();
 
-    if (success) closeAllModal();
-
-    setIsLoading(false);
+    try {
+      const success = await actions[action.value as keyof typeof actions]();
+      if (success) closeAllModal();
+    } catch (error) {
+      console.log(`Failed to ${action.value} file`, error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleRemoveEmail = async (email: string) => {
-    const updateEmail = emails.filter((e) => e !== email);
+    // Remove from the people who currently have access, not from the
+    // text typed into the input.
+    const updatedEmails = (file.users ?? []).filter(
+      (e: string) => e !== email,
+    );
 
-    const sucess = await updateFileUsers({
-      fileId: file.$id,
-      emails: updateEmail,
-      path,
-    });
-
-    if (sucess) setEmails(updateEmail);
+    try {
+      await updateFileUsers({
+        fileId: file.$id,
+        emails: updatedEmails,
+        path,
+      });
+    } catch (error) {
+      console.log("Failed to remove user", error);
+    }
     closeAllModal();
   };
 
@@ -184,7 +192,7 @@ export default function ActionDrop({ file }: { file: Models.Document }) {
                 <Link
                   download={file.name}
                   className="flex items-center gap-2"
-                  href={constructDownloadUrl(file.bucketFileId)}
+                  href={constructDownloadUrl(file.$id || file.bucketFileId)}
                 >
                   <Image
                     src={item.icon}

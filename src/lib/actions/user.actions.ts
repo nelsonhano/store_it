@@ -56,7 +56,7 @@ export const createAccount = async ({
   if (!existingUser) {
     const { databases } = await createAdminClient();
 
-    const createdUser = await databases.createDocument(
+    await databases.createDocument(
       appwriteConfig.databaseId,
       appwriteConfig.userCollectionId,
       ID.unique(),
@@ -67,8 +67,6 @@ export const createAccount = async ({
         accountId,
       },
     );
-
-    console.log(createdUser);
   }
 
   return parseStringify({ accountId });
@@ -99,8 +97,11 @@ export const verifySecret = async ({
 
 export const getCurrentUser = async () => {
   try {
-    const { databases, account } = await createSessionClient();
+    // The session proves who the user is; the profile is then read with
+    // the server key, so the collection does not need public permissions.
+    const { account } = await createSessionClient();
     const result = await account.get();
+    const { databases } = await createAdminClient();
 
     const user = await databases.listDocuments(
       appwriteConfig.databaseId,
@@ -117,14 +118,15 @@ export const getCurrentUser = async () => {
 };
 
 export const signOutUser = async () => {
-  const { account } = await createSessionClient();
-
   try {
+    // Inside the try so a missing cookie still reaches the redirect below.
+    const { account } = await createSessionClient();
     await account.deleteSession("current");
-    (await cookies()).delete("appwrite-session");
   } catch (error) {
-    handleError(error, "Failed to sign out user");
+    console.log(error, "Failed to sign out user");
   } finally {
+    // Always clear the cookie, even if the session was already gone.
+    (await cookies()).delete("appwrite-session");
     redirect("/sign-in");
   }
 };

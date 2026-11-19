@@ -4,13 +4,7 @@ import Search from "@/components/Search";
 import FileUploader from "@/components/FileUploader";
 import { signOutUser } from "@/lib/actions/user.actions";
 
-export default function Header({
-  userId,
-  accountId,
-}: {
-  userId: string;
-  accountId: string;
-}) {
+export default function Header() {
   const handleSignOut = async () => {
     "use server"; // Indicates this is a server action
     await signOutUser();
@@ -20,7 +14,7 @@ export default function Header({
       <header className="header">
         <Search />
         <div className="header-wrapper">
-          <FileUploader className=" " ownerId={userId} accountId={accountId} />
+          <FileUploader className="" />
           <form action={handleSignOut}>
             <Button className="sign-out-button" type="submit">
               <Image

@@ -70,7 +70,14 @@ export function ShareInput({ file, onInputChange, onRemove }: Props) {
           type="email"
           placeholder="Enter email address"
           className="share-input-field"
-          onChange={(e) => onInputChange(e.target.value.trim().split(","))}
+          onChange={(e) =>
+            onInputChange(
+              e.target.value
+                .split(",")
+                .map((email) => email.trim())
+                .filter(Boolean),
+            )
+          }
         />
 
         <div className="pt-4">

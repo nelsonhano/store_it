@@ -41,7 +41,7 @@ export default function Sidebar({ fullName, email, avatar }: Props) {
               <li
                 className={cn(
                   "sidebar-nav-item",
-                  pathname === url && "shad-active",
+                  pathname === url && "bg-[#8B5DFF]",
                 )}
               >
                 <Image
@@ -71,7 +71,7 @@ export default function Sidebar({ fullName, email, avatar }: Props) {
 
       <div className="sidebar-user-info">
         <Image
-          src={avatarPlaceholderUrl}
+          src={avatar || avatarPlaceholderUrl}
           alt="Avatar"
           width={44}
           height={44}

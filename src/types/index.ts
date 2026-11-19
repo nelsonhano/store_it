@@ -14,9 +14,7 @@ export declare interface ActionType {
 }
 
 export interface SegmentParams {
-  // Add the relevant properties for SegmentParams
-  id: string; // Example property
-  name?: string;
+  type?: string;
 }
 
 export declare interface SearchParamProps {
@@ -26,8 +24,6 @@ export declare interface SearchParamProps {
 
 export interface UploadFileProps {
   file: File;
-  ownerId: string;
-  accountId: string;
   path: string;
 }
 export declare interface GetFilesProps {
@@ -49,6 +45,5 @@ export declare interface UpdateFileUsersProps {
 }
 export declare interface DeleteFileProps {
   fileId: string;
-  bucketFileId: string;
   path: string;
 }

@@ -30,10 +30,12 @@ export default function OTPModal({
   const [isOpen, setIsOpen] = useState(true);
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setIsLoading(true);
+    setErrorMessage("");
 
     try {
       const sessionId = await verifySecret({ accountId, password });
@@ -41,13 +43,19 @@ export default function OTPModal({
       if (sessionId) router.push("/");
     } catch (e) {
       console.log(`Failed to verify OTP form, ${e}`);
+      setErrorMessage("Invalid or expired code. Please try again.");
     }
 
     setIsLoading(false);
   };
 
   const handleResendOtp = async () => {
-    await sendEmailOTP({ email });
+    setErrorMessage("");
+    try {
+      await sendEmailOTP({ email });
+    } catch {
+      setErrorMessage("Failed to resend the code. Please try again.");
+    }
   };
 
   return (
@@ -81,6 +89,10 @@ export default function OTPModal({
               <InputOTPSlot index={5} className="shad-otp-slot outline" />
             </InputOTPGroup>
           </InputOTP>
+
+          {errorMessage && (
+            <p className="error-message text-center">*{errorMessage}</p>
+          )}
 
           <AlertDialogFooter>
             <div className="flex w-full flex-col items-center justify-center gap-4">

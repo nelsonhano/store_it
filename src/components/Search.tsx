@@ -25,11 +25,18 @@ export default function Search() {
       if (debounceQuery.length === 0) {
         setResults([]);
         setOpen(false);
-        return router.push(path.replace(searchParams.toString(), ""));
+        // Only clear the ?query= filter. Pushing on every empty query
+        // also ran on first load and wiped other params like ?sort=.
+        if (searchQuery) router.push(path);
+        return;
       }
-      const files = await getFiles({ searchText: debounceQuery, types: [] });
 
-      setResults(files.documents);
+      try {
+        const files = await getFiles({ searchText: debounceQuery, types: [] });
+        setResults(files?.documents ?? []);
+      } catch {
+        setResults([]);
+      }
       setOpen(true);
     };
 
@@ -47,7 +54,7 @@ export default function Search() {
     setResults([]);
 
     router.push(
-      `/${file.type === "video" || file.type === "audio" ? "media" : file.type + "s"}? query=${query}`,
+      `/${file.type === "video" || file.type === "audio" ? "media" : file.type + "s"}?query=${encodeURIComponent(query)}`,
     );
   };
   return (
@@ -84,8 +91,9 @@ export default function Search() {
                       imageClassName=""
                       className="size-9 min-w-9"
                     />
-                    <p className="subtitle-2 line-clamp-1 text-light-100 "></p>
-                    {item.name}
+                    <p className="subtitle-2 line-clamp-1 text-light-100">
+                      {item.name}
+                    </p>
                     {/* </Link> */}
                   </div>
                   <FormattedDateTime

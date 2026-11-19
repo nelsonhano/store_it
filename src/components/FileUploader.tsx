@@ -13,12 +13,10 @@ import { uploadFile } from "@/lib/actions/file.action";
 import { usePathname } from "next/navigation";
 
 interface Props {
-  ownerId: string;
-  accountId: string;
   className: string;
 }
 
-export default function FileUploader({ ownerId, accountId, className }: Props) {
+export default function FileUploader({ className }: Props) {
   const [file, setFile] = useState<File[]>([]);
   const { toast } = useToast();
   const path = usePathname();
@@ -42,21 +40,29 @@ export default function FileUploader({ ownerId, accountId, className }: Props) {
         }
 
         // Upload each file individually
-        return uploadFile({ file, ownerId, accountId, path }).then(
-          (uploadedFile) => {
-            if (uploadedFile) {
-              setFile((prevFiles) =>
-                prevFiles.filter((f) => f.name !== file.name),
-              );
-            }
-          },
-        );
+        try {
+          await uploadFile({ file, path });
+        } catch {
+          toast({
+            description: (
+              <p className="body-2 text-white">
+                Failed to upload{" "}
+                <span className="font-semibold">{file.name}</span>.
+              </p>
+            ),
+            className: "error-toast",
+          });
+        } finally {
+          // Remove the item from the list whether it succeeded or failed,
+          // so a failed upload does not spin forever.
+          setFile((prevFiles) => prevFiles.filter((f) => f.name !== file.name));
+        }
       });
 
       // Wait for all uploads to complete
       await Promise.all(uploadPromises);
     },
-    [ownerId, accountId, path],
+    [path, toast],
   );
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
@@ -72,9 +78,9 @@ export default function FileUploader({ ownerId, accountId, className }: Props) {
   return (
     <div {...getRootProps()} className="cursor-pointer">
       <input {...getInputProps()} />
-      <Button type="button" className={cn("uploader-button", className)}>
+      <Button type="button" className={cn("bg-[#8B5DFF] h-[52px] gap-2 px-10 shadow-drop-1 rounded-2xl", className)}>
         <Image
-          src="assets/icons/upload.svg"
+          src="/assets/icons/upload.svg"
           alt="upload"
           width={24}
           height={24}
@@ -83,7 +89,7 @@ export default function FileUploader({ ownerId, accountId, className }: Props) {
 
         {file.length > 0 && (
           <ul className="uploader-preview-list">
-            <h4 className="h4 text-light-100">Uploading</h4>
+            <h4 className="h4">Uploading</h4>
 
             {file.map((file, index) => {
               const { type, extension } = getFileType(file.name);

@@ -17,16 +17,12 @@ import { Button } from "@/components/ui/button";
 import { signOutUser } from "@/lib/actions/user.actions";
 import FileUploader from "@/components/FileUploader";
 interface Props {
-  ownerId: string;
-  accountId: string;
   fullName: string;
   avatar: string;
   email: string;
 }
 
 export default function MobileNavigation({
-  ownerId,
-  accountId,
   fullName,
   avatar,
   email,
@@ -100,7 +96,7 @@ export default function MobileNavigation({
 
           <Separator className="my-5 bg-light-200/20" />
 
-          <FileUploader className="" ownerId={ownerId} accountId={accountId} />
+          <FileUploader className="" />
           <div className="flex flex-col justify-between gap-5 pb-5">
             <Button
               type="submit"

@@ -173,14 +173,64 @@ export const getFileIcon = (
   }
 };
 
-// APPWRITE URL UTILS
-// Construct appwrite file URL - https://appwrite.io/docs/apis/rest#images
-export const constructFileUrl = (bucketFileId: string) => {
-  return `${process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT}/storage/buckets/${process.env.NEXT_PUBLIC_APPWRITE_BUCKET}/files/${bucketFileId}/view?project=${process.env.NEXT_PUBLIC_APPWRITE_PROJECT}`;
+export const getMimeType = (extension: string): string => {
+  const cleanExt = extension.replace(/^\./, "").toLowerCase();
+  const mimeMap: Record<string, string> = {
+    // Documents
+    pdf: "application/pdf",
+    doc: "application/msword",
+    docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    xls: "application/vnd.ms-excel",
+    xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    csv: "text/csv",
+    txt: "text/plain",
+    rtf: "application/rtf",
+    ppt: "application/vnd.ms-powerpoint",
+    pptx: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    html: "text/html",
+    htm: "text/html",
+    json: "application/json",
+    xml: "application/xml",
+    zip: "application/zip",
+    rar: "application/x-rar-compressed",
+    tar: "application/x-tar",
+    // Images
+    png: "image/png",
+    jpg: "image/jpeg",
+    jpeg: "image/jpeg",
+    gif: "image/gif",
+    svg: "image/svg+xml",
+    webp: "image/webp",
+    ico: "image/x-icon",
+    bmp: "image/bmp",
+    tiff: "image/tiff",
+    // Video
+    mp4: "video/mp4",
+    mkv: "video/x-matroska",
+    mov: "video/quicktime",
+    avi: "video/x-msvideo",
+    webm: "video/webm",
+    wmv: "video/x-ms-wmv",
+    flv: "video/x-flv",
+    // Audio
+    mp3: "audio/mpeg",
+    wav: "audio/wav",
+    ogg: "audio/ogg",
+    m4a: "audio/mp4",
+    aac: "audio/aac",
+    flac: "audio/flac",
+  };
+
+  return mimeMap[cleanExt] || "application/octet-stream";
 };
 
-export const constructDownloadUrl = (bucketFileId: string) => {
-  return `${process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT}/storage/buckets/${process.env.NEXT_PUBLIC_APPWRITE_BUCKET}/files/${bucketFileId}/download?project=${process.env.NEXT_PUBLIC_APPWRITE_PROJECT}`;
+// PROTECTED FILE URL UTILS
+export const constructFileUrl = (fileId: string) => {
+  return `/api/files/${fileId}/view`;
+};
+
+export const constructDownloadUrl = (fileId: string) => {
+  return `/api/files/${fileId}/download`;
 };
 
 // DASHBOARD UTILS
